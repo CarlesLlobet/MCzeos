@@ -70,8 +70,7 @@
 
 ENTRY(keyboard_handler)
 SAVE_ALL
-EOI
-call keyboard_service_routine
+call keyboard_service_routine()
 RESTORE_ALL
 iret;
 
