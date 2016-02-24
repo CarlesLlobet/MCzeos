@@ -61,8 +61,8 @@ int sys_write(int fd, char * buffer, int size){
 	
 	bytes_left = nbytes;
 	while (bytes_left > TAM_BUFFER) {
-		copy_from_user(buffer, localbuffer, BUFFER_SIZE);
-		ret = sys_write_console(localbuffer, BUFFER_SIZE);
+		copy_from_user(buffer, localbuffer, TAM_BUFFER);
+		ret = sys_write_console(localbuffer, TAM_BUFFER);
 		bytes_left-=ret;
 		buffer+=ret;
 	}
