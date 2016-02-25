@@ -79,7 +79,7 @@ ENTRY(system_call_handler)
 	SAVE_ALL
 	cmpl $0, %eax;
 	jl err;
-	cmpl $4, %eax;
+	cmpl $MAX_SYSCALL, %eax;
 	jg err;
 	call *sys_call_table(, %eax, 0x04);
 	jmp fin;

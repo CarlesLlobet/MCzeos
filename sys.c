@@ -54,13 +54,13 @@ int sys_write(int fd, char * buffer, int size){
 
 	if ((ret = check_fd(fd, ESCRIPTURA)))
 		return ret;
-	if (nbytes < 0)
-		return -EINVAL;
-	if (!access_ok(VERIFY_READ, buffer, nbytes))
-		return -EFAULT;
+	if (size < 0)
+		return -1;
+	if (!access_ok(VERIFY_READ, buffer, size))
+		return -1;
 	
-	bytes_left = nbytes;
-	while (bytes_left > TAM_BUFFER) {
+	bytes_left = size;
+	while (bytes_left > BUFFER_SIZE) {
 		copy_from_user(buffer, localbuffer, BUFFER_SIZE);
 		ret = sys_write_console(localbuffer, BUFFER_SIZE);
 		bytes_left-=ret;
@@ -71,6 +71,6 @@ int sys_write(int fd, char * buffer, int size){
 		ret = sys_write_console(localbuffer, bytes_left);
 		bytes_left-=ret;
 	}
-	return (nbytes-bytes_left);
+	return (size-bytes_left);
 }
 	
