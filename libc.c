@@ -43,13 +43,14 @@ int strlen(char *a)
   return i;
 }
 
-int write (int fd, char * buffer, int size){
+int write(int fd, char * buffer, int size){
 	//ficar parametres i posar l'id de la interrupcio.. Funciona?
-	__asm__ ( "movl %0, %%ebx; movl %1, %%ecx; movl %2, %%edx; movl $4, %%eax; int $0x80" ::"a"(fd,buffer,size));
+	__asm__ ( "movl %0, %%ebx; movl %1, %%ecx; movl %2, %%edx; movl $4, %%eax;int 0x80;":"=a"(fd,buffer,size));
 	//process the result
 	if (errno<0){
 		errno = -errno;
 		return -1;
+	}
 	else{
 		return 0;
 	}

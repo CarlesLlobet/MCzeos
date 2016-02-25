@@ -69,22 +69,22 @@
     outb %al, $0x20 ;
 
 ENTRY(keyboard_handler)
-SAVE_ALL
-EOI
-call keyboard_service_routine
-RESTORE_ALL
-iret;
+	SAVE_ALL
+	EOI
+	call keyboard_service_routine
+	RESTORE_ALL
+	iret;
 
 ENTRY(system_call_handler)
 	SAVE_ALL
 	cmpl $0, %eax;
 	jl err;
-	cmpl $MAX_SYSCALL, %eax;
+	cmpl $4, %eax;
 	jg err;
 	call *sys_call_table(, %eax, 0x04);
 	jmp fin;
 err:
-	movl $-ENOSYS, %eax;
+	movl $-38, %eax;
 fin:
 	movl %eax, 0x18(%esp);
 	RESTORE_ALL
