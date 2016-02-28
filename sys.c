@@ -47,6 +47,7 @@ void sys_exit()
 {  
 }
 
+
 int sys_write(int fd, char * buffer, int size){
 	char localbuffer [BUFFER_SIZE];
 	int bytes_left;
