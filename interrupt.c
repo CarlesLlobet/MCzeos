@@ -109,6 +109,7 @@ void keyboard_service_routine(){
 }
 
 void clock_service_routine(){
+	//++zeos_ticks;
 	zeos_show_clock();
 }
 

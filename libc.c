@@ -56,3 +56,14 @@ int write(int fd, char * buffer, int size){
 	}
 }
 
+/*int gettime(){
+	__asm__("movl $10, %%eax; int 0x80");
+	if (errno<0){
+		errno = -errno;
+		return -1;
+	}
+	else{
+		return 0;
+	}
+}*/
+

@@ -47,6 +47,9 @@ void sys_exit()
 {  
 }
 
+/*int sys_gettime(){
+	return zeos_ticks;
+}*/
 
 int sys_write(int fd, char * buffer, int size){
 	char localbuffer [BUFFER_SIZE];
