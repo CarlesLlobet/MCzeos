@@ -9,9 +9,13 @@
 
 #include <mm.h>
 
+#include <interrupt.h>
+
 #include <mm_address.h>
 
 #include <sched.h>
+
+#include <errno.h>
 
 #define LECTURA 0
 #define ESCRIPTURA 1
@@ -19,14 +23,14 @@
 
 int check_fd(int fd, int permissions)
 {
-  if (fd!=1) return -9; /*EBADF*/
-  if (permissions!=ESCRIPTURA) return -13; /*EACCES*/
+  if (fd!=1) return -EBADF;
+  if (permissions!=ESCRIPTURA) return -EACCES;
   return 0;
 }
 
 int sys_ni_syscall()
 {
-	return -38; /*ENOSYS*/
+	return -ENOSYS;
 }
 
 int sys_getpid()
@@ -48,8 +52,7 @@ void sys_exit()
 }
 
 int sys_gettime(){
-	//return zeos_ticks; PORQUEEEEEE!!!!
-	return 0;
+	return zeos_ticks;
 }
 
 int sys_write(int fd, char * buffer, int size){
@@ -60,9 +63,9 @@ int sys_write(int fd, char * buffer, int size){
 	if ((ret = check_fd(fd, ESCRIPTURA)))
 		return ret;
 	if (size < 0)
-		return -1;
+		return -EINVAL;
 	if (!access_ok(VERIFY_READ, buffer, size))
-		return -1;
+		return -EFAULT;
 	
 	bytes_left = size;
 	while (bytes_left > BUFFER_SIZE) {
