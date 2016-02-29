@@ -44,26 +44,28 @@ int strlen(char *a)
 }
 
 int write(int fd, char * buffer, int size){
-	//ficar parametres i posar l'id de la interrupcio.. Funciona?
-	__asm__ ( "movl %0, %%ebx; movl %1, %%ecx; movl %2, %%edx; movl $4, %%eax;int 0x80;":"=a"(fd,buffer,size));
-	//process the result
-	if (errno<0){
-		errno = -errno;
-		return -1;
-	}
-	else{
-		return 0;
-	}
+	int result;
+
+	__asm__ __volatile__ (
+		"int $0x80\n\t"
+		: "=a" (result)
+		: "a" (4), "b" (fd), "c" (buffer), "d" (size));
+ 	 if (result<0) {
+	    errno = -result;
+    	    return -1;
+	 }
+  	 errno=0;
+	 return result;
 }
 
-/*int gettime(){
-	__asm__("movl $10, %%eax; int 0x80");
-	if (errno<0){
-		errno = -errno;
-		return -1;
-	}
-	else{
-		return 0;
-	}
-}*/
+int gettime(){
+	int result;
+  
+  	__asm__ __volatile__ (
+		"int $0x80\n\t"
+		:"=a" (result)
+		:"a" (10) );
+  	errno=0;
+  	return result;
+}
 
