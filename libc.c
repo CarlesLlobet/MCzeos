@@ -6,6 +6,8 @@
 
 #include <types.h>
 
+#include <errno.h>
+
 int errno;
 
 void itoa(int a, char *b)
@@ -65,7 +67,17 @@ int gettime(){
 		"int $0x80\n\t"
 		:"=a" (result)
 		:"a" (10) );
+	if (result<0) {
+	    errno = -result;
+    	    return -1;
+	 }
   	errno=0;
   	return result;
+}
+
+void perror() {
+  char *buffer = "Error. Buffer not printed correctly";
+  itoa(errno, buffer);
+  write(1, buffer, strlen(buffer));
 }
 

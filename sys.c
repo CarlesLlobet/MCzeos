@@ -64,7 +64,7 @@ int sys_write(int fd, char * buffer, int size){
 		return ret;
 	if (size < 0)
 		return -EINVAL;
-	if (!access_ok(VERIFY_READ, buffer, size))
+	if (buffer == NULL)
 		return -EFAULT;
 	
 	bytes_left = size;
@@ -76,9 +76,9 @@ int sys_write(int fd, char * buffer, int size){
 	}
 	if (bytes_left > 0) {
 		copy_from_user(buffer, localbuffer,bytes_left);
-		ret = sys_write_console(localbuffer, bytes_left);
-		bytes_left-=ret;
+		sys_write_console(localbuffer, bytes_left);
+
 	}
-	return (size-bytes_left);
+	return (size);
 }
 	
