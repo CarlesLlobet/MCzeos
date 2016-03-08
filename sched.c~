@@ -79,8 +79,9 @@ void init_sched(){
 //Inicialitzar freequeue buida
 INIT_LIST_HEAD(&freequeue);
 //Posar totes les task struct a freequeue ja que estan buides
-for (int i = 0; i < NR_TASKS; i++){
-	list_add( &(task[i].list), &freequeue );
+for (int i = 0; i < 10; i++){
+	struct task_struct pcb;
+	list_add( &(pcb.list), &freequeue );
 }
 //Inicialitzar readyqueue buida
 INIT_LIST_HEAD(&readyqueue);
