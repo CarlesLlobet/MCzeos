@@ -82,6 +82,19 @@ void init_idle (void)
 
 void init_task1(void)
 {
+     	struct task_struct *init = list_head_to_task_struct(&freequeue);
+     	list_del(&(*init).list);
+     	(*init).PID = 1;
+	allocate_DIR(init);
+	set_user_pages(init);
+	
+	//Update TSS
+	union task_union *p;    
+	p = (union task_union*) init;
+	tss.esp0 = (int) &(*p).stack[1024];
+
+	set_cr3((*init).dir_pages_baseAddr);
+ 	
 }
 
 
