@@ -5,6 +5,7 @@
 #include <sched.h>
 #include <mm.h>
 #include <io.h>
+#include <stdint.h>
 
 /**
  * Container for the Task array and 2 additional pages (the first and the last one)
@@ -19,9 +20,10 @@ struct list_head freequeue;
 struct list_head readyqueue;
 struct task_struct *idle_task;
 
-struct task_struct *list_head_to_task_struct(struct list_head *l)
-{
-  return l&0xfffff000;
+struct task_struct *list_head_to_task_struct(struct list_head *l) {
+  int add = (uintptr_t)l & ~(uintptr_t)(struct list_head*)0xfffff000;
+  struct task_struct *a = (struct task_struct*) add;
+  return a;
   //return list_entry( l, struct task_struct, list); Valia antiguamente pero ara ja no
 }
 
@@ -65,17 +67,17 @@ void cpu_idle(void)
 void init_idle (void)
 {
 	struct task_struct *idle = list_head_to_task_struct(&freequeue);
-	list_del(&idle.list);
-	idle.PID = 0;
-	allocate_DIR(&idle);
+	list_del(&(*idle).list);
+	(*idle).PID = 0;
+	allocate_DIR(idle);
 	//Falta inicialitzar contexte d'execució
 	union task_union *p;
 	p = (union task_union*) idle;
-	p -> stack[1023] = cpu_idle;
-	p -> stack[1022] = 0;
-	idle.kernel_esp = (unsigned long) &stack[1022];
+	(*p).stack[1023] = (unsigned long)&cpu_idle;
+	(*p).stack[1022] = 0;
+	(*p).task.kernel_esp = (unsigned long) &(*p).stack[1022];
 	//L'assignem a l'idle global
-	idle_task = p;
+	idle_task = &(*p).task;
 }
 
 void init_task1(void)
@@ -89,7 +91,7 @@ INIT_LIST_HEAD(&freequeue);
 //Posar totes les task struct a freequeue ja que estan buides
 int i = 0;
 for (i = 0; i < NR_TASKS; i++){
-	list_add( &(task[i].list), &freequeue );
+	list_add( &(task[i].task.list), &freequeue );
 }
 //Inicialitzar readyqueue buida
 INIT_LIST_HEAD(&readyqueue);
