@@ -99,25 +99,54 @@ void init_task1(void)
 
 
 void init_sched(){
-//Inicialitzar freequeue buida
-INIT_LIST_HEAD(&freequeue);
-//Posar totes les task struct a freequeue ja que estan buides
-int i = 0;
-for (i = 0; i < NR_TASKS; i++){
-	list_add( &(task[i].task.list), &freequeue );
-}
-//Inicialitzar readyqueue buida
-INIT_LIST_HEAD(&readyqueue);
+	//Inicialitzar freequeue buida
+	INIT_LIST_HEAD(&freequeue);
+	//Posar totes les task struct a freequeue ja que estan buides
+	int i = 0;
+	for (i = 0; i < NR_TASKS; i++){
+		list_add( &(task[i].task.list), &freequeue );
+	}
+	//Inicialitzar readyqueue buida
+	INIT_LIST_HEAD(&readyqueue);
 }
 
-struct task_struct* current()
-{
-  int ret_value;
+struct task_struct* current(){
+ 	 int ret_value;
   
-  __asm__ __volatile__(
-  	"movl %%esp, %0"
-	: "=g" (ret_value)
-  );
-  return (struct task_struct*)(ret_value&0xfffff000);
+ 	 __asm__ __volatile__(
+ 	 	"movl %%esp, %0"
+		: "=g" (ret_value)
+ 	 );
+ 	 return (struct task_struct*)(ret_value&0xfffff000);
+}
+
+void inner_task_switch(union task_union*t){
+	struct task_struct *current_task;
+	current_task = current();	
+	tss.esp0 = (int) &(*t).stack[1024];
+	set_cr3((*t).task.dir_pages_baseAddr);
+	__asm__ __volatile__(
+ 	 	"movl %%ebp, %0\n"
+		"movl %1, %%esp\n"
+		"popl %%ebp\n"
+		"ret"
+		: "=g" ((*current_task).kernel_esp)
+		:  "g" ((*t).task.kernel_esp)
+ 	 );
+	
+}
+
+void task_switch(union task_union *t){
+	__asm__ __volatile__(
+ 	 	"pushl %esi\n"
+		"pushl %edi\n"
+		"pushl %ebx"
+ 	 );
+	inner_task_switch(t);
+	__asm__ __volatile__(
+ 	 	"popl %ebx\n"
+		"popl %edi\n"
+		"popl %esi"
+ 	 );
 }
 
