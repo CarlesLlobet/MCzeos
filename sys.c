@@ -21,6 +21,8 @@
 #define ESCRIPTURA 1
 #define BUFFER_SIZE 512
 
+extern struct list_head freequeue;
+
 int check_fd(int fd, int permissions)
 {
   if (fd!=1) return -EBADF;
@@ -41,7 +43,14 @@ int sys_getpid()
 int sys_fork()
 {
   int PID=-1;
-
+  struct task_struct *child;
+  if (!list_empty(&freequeue)){
+  	child = list_head_to_task_struct(&freequeue);
+  	list_del(&(*child).list);
+  }
+  else { 
+	return -1; //No hi ha task structs lliures pel nou proces
+  }	
   // creates the child process
   
   return PID;

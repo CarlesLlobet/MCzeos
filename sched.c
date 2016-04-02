@@ -60,7 +60,7 @@ void cpu_idle(void)
 
 	while(1)
 	{
-	;
+	;//aqui va sti per activar interrupcions i poder sortir
 	}
 }
 
@@ -94,7 +94,6 @@ void init_task1(void)
 	tss.esp0 = (int) &(*p).stack[1024];
 
 	set_cr3((*init).dir_pages_baseAddr);
- 	
 }
 
 

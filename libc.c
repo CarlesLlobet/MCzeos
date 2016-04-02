@@ -75,6 +75,34 @@ int gettime(){
   	return result;
 }
 
+int getpid(){
+	int result;
+	__asm__ __volatile__ (
+		"int $0x80\n\t"
+		:"=a" (result)
+		:"a" (20) );
+	if (result<0) {
+	    errno = -result;
+    	    return -1;
+	 }
+  	errno=0;
+  	return result;
+}
+
+int fork(){
+	int result;
+	__asm__ __volatile__ (
+		"int $0x80\n\t"
+		:"=a" (result)
+		:"a" (2) );
+	if (result<0) {
+	    errno = -result;
+    	    return -1;
+	 }
+  	errno=0;
+  	return result;
+}
+
 void perror() {
   char *buffer = "Error. Buffer not printed correctly";
   itoa(errno, buffer);
