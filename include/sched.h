@@ -6,19 +6,25 @@
 #define __SCHED_H__
 
 #include <list.h>
+#include <stats.h>
 #include <types.h>
 #include <mm_address.h>
 
 #define NR_TASKS      10
 #define KERNEL_STACK_SIZE	1024
+#define DEFAULT_QUANTUM 	100
 
-enum state_t { ST_RUN, ST_READY, ST_BLOCKED };
+enum state_t { ST_RUN, ST_READY, ST_BLOCKED , ST_FREE};
 
 struct task_struct {
   int PID;			/* Process ID. This MUST be the first field of the struct. */
   page_table_entry * dir_pages_baseAddr;
+  int quantum;
   unsigned long kernel_esp;
   struct list_head list;
+  enum state_t state;
+  struct stats stats;
+
 };
 
 union task_union {

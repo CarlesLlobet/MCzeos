@@ -179,7 +179,7 @@ void update_process_state_rr(struct task_struct *t, struct list_head *dst_queue)
 }
 
 void sched_next_rr(){
-	struct task_struct *next;
+	struct taskt_struct *next;
 	if (list_empty(&readyqueue)) next = idle_task;
 	else {
 		next = list_head_to_task_struct(&readyqueue);
