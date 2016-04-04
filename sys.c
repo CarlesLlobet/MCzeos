@@ -43,14 +43,34 @@ int sys_getpid()
 int sys_fork(){
   	int PID=-1;
 //Pilla un nou PCB pel fill i el del pare
-  	if (list_empty(&freequeue)) return -1; // No hi ha PCB lliures;
+  	if (list_empty(&freequeue)) return -ENOMEM; // No hi ha PCB lliures;
 	struct task_struct *father = current();
   	struct task_struct *child = list_head_to_task_struct(&freequeue);
   	list_del(&(*child).list);
 	union task_union *child_stack = (union task_union *) child;
 
-  
-  	return PID;
+	//Copiar task_struct de pare a fill
+	copy_data(father,child,sizeof(union task_union));
+   
+	 allocate_DIR(child);
+
+	//Buscar pagines per alocatar DATA+STACK
+
+	//Copiar codi de pare a fill
+
+	//Copiar DATA+STACK de pare a fill
+
+	//Desactivar acces del pare a pagines del fill
+
+	//Assignar un PID al process fill i guardarlo a PID
+
+	//Inicialitzar els camps del TS que no copiem del pare
+
+	//Preparar pila fill per fer el canvi de context
+
+	//Encuar proces fill a ReadyQueue
+
+  	return PID; //PID del fill
 }
 
 void sys_exit(){  
