@@ -23,6 +23,7 @@
 
 extern struct list_head freequeue;
 extern struct list_head readyqueue;
+extern int curr_quantum;
 
 int check_fd(int fd, int permissions)
 {
@@ -127,6 +128,9 @@ int sys_fork(){
   	(*child).kernel_esp-=sizeof(DWord);
   	*(DWord*)((*child).kernel_esp)=temp_ebp;
 
+	//Posa stats a 0
+	init_stats(&(*child).stats);
+
 	//Encuar proces fill a ReadyQueue
 	(*child).state=ST_READY;
   	list_add_tail(&((*child).list), &readyqueue);
@@ -153,7 +157,21 @@ int sys_gettime(){
 }
 
 int sys_getstats(int pid, struct stats *st){
-	return 0;
+	int i;
+  
+  	if (!access_ok(VERIFY_WRITE, st, sizeof(struct stats))) return -EFAULT; 
+  
+  	if (pid<0) return -EINVAL;
+  	for (i=0; i<NR_TASKS; i++)
+  	{
+    		if (task[i].task.PID==pid)
+    	{
+      	task[i].task.stats.remaining_ticks=curr_quantum;
+      	copy_to_user(&(task[i].task.stats), st, sizeof(struct stats));
+      return 0;
+    }
+  }
+  return -ESRCH; /*ESRCH */
 }
 
 int sys_write(int fd, char * buffer, int size){

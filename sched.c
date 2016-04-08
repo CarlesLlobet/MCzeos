@@ -78,6 +78,7 @@ void init_idle (void)
 	list_del(&(*idle).list);
 	(*idle).PID = 0;
 	set_quantum(idle,DEFAULT_QUANTUM);
+	init_stats(&(*idle).stats);
 	allocate_DIR(idle);
 	//Falta inicialitzar contexte d'execució
 	union task_union *p;
@@ -95,6 +96,9 @@ void init_task1(void)
      	list_del(&(*init).list);
      	(*init).PID = 1;
 	set_quantum(init,DEFAULT_QUANTUM);
+	init_stats(&(*init).stats);
+	(*init).state = ST_RUN;
+	curr_quantum = get_quantum(init);
 	allocate_DIR(init);
 	set_user_pages(init);
 	
@@ -176,6 +180,7 @@ void update_process_state_rr(struct task_struct *t, struct list_head *dst_queue)
 		list_add_tail(&((*t).list),dst_queue);
 		if (dst_queue != &readyqueue) (*t).state = ST_BLOCKED;
 		else {
+			     update_stats(&((*t).stats.system_ticks), &((*t).stats.elapsed_total_ticks));
 			(*t).state = ST_READY;
 		}
 	}
@@ -193,6 +198,9 @@ void sched_next_rr(){
 	if (next != current()){
 		task_switch((union task_union*)next);
 	}
+	update_stats(&((*current()).stats.system_ticks), &((*current()).stats.elapsed_total_ticks));
+  update_stats(&((*next).stats.ready_ticks), &((*next).stats.elapsed_total_ticks));
+  (*next).stats.total_trans++;
 }
 
 void schedule(){
@@ -201,5 +209,28 @@ void schedule(){
 		update_process_state_rr(current(),&readyqueue);
 		sched_next_rr();
 	}
+}
+
+void init_stats(struct stats *s)
+{
+	(*s).user_ticks = 0;
+	(*s).system_ticks = 0;
+	(*s).blocked_ticks = 0;
+	(*s).ready_ticks = 0;
+	(*s).elapsed_total_ticks = get_ticks();
+	(*s).total_trans = 0;
+	(*s).remaining_ticks = get_ticks();
+}
+
+void update_stats(unsigned long *v, unsigned long *elapsed)
+{
+  unsigned long current_ticks;
+  
+  current_ticks=get_ticks();
+  
+  *v += current_ticks - *elapsed;
+  
+  *elapsed=current_ticks;
+  
 }
 
