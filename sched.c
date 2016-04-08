@@ -113,6 +113,7 @@ void init_sched(){
 	//Posar totes les task struct a freequeue ja que estan buides
 	int i = 0;
 	for (i = 0; i < NR_TASKS; i++){
+		task[i].task.PID=-1;
 		list_add( &(task[i].task.list), &freequeue );
 	}
 	//Inicialitzar readyqueue buida
@@ -160,22 +161,25 @@ void task_switch(union task_union *t){
 }
 
 void update_sched_data_rr(){
-	--curr_quantum;
+	curr_quantum--;
 }
 
 int needs_sched_rr(){
-	return (curr_quantum == 0);
+	if ((curr_quantum==0)&&(!list_empty(&readyqueue))) return 1;
+  	if (curr_quantum==0) curr_quantum=get_quantum(current());
+  	return 0;
 }
 
 void update_process_state_rr(struct task_struct *t, struct list_head *dst_queue){
-	if (dst_queue == &freequeue) (*t).state = ST_FREE;
-	else if (dst_queue == &readyqueue) (*t).state = ST_READY;
-	else (*t).state = ST_BLOCKED;
-	
-	if ((t != idle_task) & (!list_empty(&readyqueue))){
-		list_del(&(*t).list);
-		list_add_tail(&(*t).list,dst_queue);
+	if ((*t).state != ST_RUN) list_del(&((*t).list));
+	if (dst_queue != NULL){
+		list_add_tail(&((*t).list),dst_queue);
+		if (dst_queue != &readyqueue) (*t).state = ST_BLOCKED;
+		else {
+			(*t).state = ST_READY;
+		}
 	}
+	else (*t).state = ST_RUN;
 }
 
 void sched_next_rr(){
@@ -183,11 +187,19 @@ void sched_next_rr(){
 	if (list_empty(&readyqueue)) next = idle_task;
 	else {
 		next = list_head_to_task_struct(&readyqueue);
-		(*next).state = ST_RUN;
 	}
+	(*next).state = ST_RUN;
 	curr_quantum = get_quantum(next);
 	if (next != current()){
 		task_switch((union task_union*)next);
+	}
+}
+
+void schedule(){
+	update_sched_data_rr();
+	if (needs_sched_rr()){
+		update_process_state_rr(current(),&readyqueue);
+		sched_next_rr();
 	}
 }
 
