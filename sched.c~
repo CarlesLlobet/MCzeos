@@ -234,7 +234,7 @@ void block_process(struct list_head *block_queue) {
 void unblock_process(struct task_struct *blocked){
   struct stats *st = get_task_stats(blocked);
   struct list_head *l = get_task_list(blocked);
-  update_process_state(blocked, &readyqueue);
+  update_process_state(blocked, &readyqueue)
   st->blocked_ticks += (get_ticks()-st->elapsed_total_ticks);
   st->elapsed_total_ticks = get_ticks();
   if (needs_sched()) {

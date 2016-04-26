@@ -113,7 +113,7 @@ void keyboard_service_routine(){
 void clock_service_routine(){
 	zeos_ticks++;
 	zeos_show_clock();
-	zeos_update_read_console_emul();
+	zeos_update_read_console_emul()
 	schedule();	
 }
 
