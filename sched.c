@@ -7,6 +7,10 @@
 #include <io.h>
 #include <stdint.h>
 
+#include <utils.h>
+#include <stats.h>
+#include <schedperf.h>
+
 /**
  * Container for the Task array and 2 additional pages (the first and the last one)
  * to protect against out of bound accesses.
@@ -74,15 +78,22 @@ void cpu_idle(void)
 
 void init_idle (void)
 {
-	struct task_struct *idle = list_head_to_task_struct(&freequeue);
-	list_del(&(*idle).list);
-	(*idle).PID = 0;
+
+	struct list_head *l = list_first(&freequeue);
+
+	list_del(l);
+printk("HOLAo");
+struct task_struct *idle = list_head_to_task_struct(l);
+ union task_union *p = (union task_union*)idle;
+printk("HOLAoz");
+	idle->PID=0;
+printk("HOLA");
 	set_quantum(idle,DEFAULT_QUANTUM);
-	init_stats(&(*idle).stats);
+printk("HOLA1");
+	init_stats(&idle->stats);
+printk("HOLA2");
 	allocate_DIR(idle);
 	//Falta inicialitzar contexte d'execució
-	union task_union *p;
-	p = (union task_union*) idle;
 	(*p).stack[1023] = (unsigned long)&cpu_idle;
 	(*p).stack[1022] = 0;
 	(*p).task.kernel_esp = (unsigned long) &(*p).stack[1022];
@@ -233,7 +244,7 @@ void block_process(struct list_head *block_queue) {
 
 void unblock_process(struct task_struct *blocked){
   struct stats *st = get_task_stats(blocked);
-  struct list_head *l = get_task_list(blocked);
+  //struct list_head *l = get_task_list(blocked);
   update_process_state(blocked, &readyqueue);
   st->blocked_ticks += (get_ticks()-st->elapsed_total_ticks);
   st->elapsed_total_ticks = get_ticks();

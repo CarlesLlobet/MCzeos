@@ -61,11 +61,11 @@ page_table_entry * get_PT (struct task_struct *t) ;
 page_table_entry * get_DIR (struct task_struct *t) ;
 
 /* Headers for the scheduling policy */
-void sched_next_rr();
+void sched_next_rr(void);
 void update_process_state_rr(struct task_struct *t, struct list_head *dest);
-int needs_sched_rr();
-void update_sched_data_rr();
-void shcedule();
+int needs_sched_rr(void);
+void update_sched_data_rr(void);
+void schedule(void);
 void init_stats(struct stats *s);
 void update_stats(unsigned long *v, unsigned long *elapsed);
 

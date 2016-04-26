@@ -11,7 +11,7 @@
 #include <mm.h>
 #include <io.h>
 #include <utils.h>
-#include <zeos_mm.h> /* TO BE DELETED WHEN ADDED THE PROCESS MANAGEMENT CODE TO BECOME MULTIPROCESS */
+/*#include <zeos_mm.h> TO BE DELETED WHEN ADDED THE PROCESS MANAGEMENT CODE TO BECOME MULTIPROCESS */
 
 
 int (*usr_main)(void) = (void *) PH_USER_START;
@@ -79,6 +79,7 @@ int __attribute__((__section__(".text.main")))
 
   /* Initialize Memory */
   init_mm();
+   printk("Memory Loaded!    "); 
 
 /* Initialize an address space to be used for the monoprocess version of ZeOS */
 
@@ -86,11 +87,14 @@ int __attribute__((__section__(".text.main")))
 
   /* Initialize Scheduling */
   init_sched();
+printk("Sched Loaded!    "); 
 
   /* Initialize idle task  data */
   init_idle();
+printk("Idle Loaded!    "); 
   /* Initialize task 1 data */
   init_task1();
+printk("Task1 Loaded!    "); 
 
   /* Move user code/data now (after the page table initialization) */
   copy_data((void *) KERNEL_START + *p_sys_size, usr_main, *p_usr_size);
@@ -111,7 +115,5 @@ int __attribute__((__section__(".text.main")))
   /* The execution never arrives to this point */
   return 0;
 }
-
-
 
 
