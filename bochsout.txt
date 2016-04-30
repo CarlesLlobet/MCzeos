@@ -41,7 +41,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Sat Apr 30 15:13:00 2016 (time0=1462021980)
+00000000000i[CMOS  ] Setting initial clock to: Sat Apr 30 15:27:19 2016 (time0=1462022839)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -167,7 +167,7 @@
 00001529176i[BXVGA ] VBE known Display Interface b0c0
 00001529208i[BXVGA ] VBE known Display Interface b0c5
 00001532133i[VBIOS ] VBE Bios $Id: vbe.c,v 1.65 2014/07/08 18:02:25 vruppert Exp $
-00002526352i[XGUI  ] charmap update. Font Height is 16
+00001738612i[XGUI  ] charmap update. Font Height is 16
 00014040191i[BIOS  ] Booting from 0000:7c00
 00030088334i[FLOPPY] partial read() on floppy image returns 464/512
 00030132778i[FLOPPY] read() on floppy image returns 0
@@ -193,26 +193,26 @@
 00031023412i[FLOPPY] read() on floppy image returns 0
 00031067856i[FLOPPY] read() on floppy image returns 0
 00031112300i[FLOPPY] read() on floppy image returns 0
-00431100000i[      ] cpu loop quit, shutting down simulator
-00431100000i[CPU0  ] CPU is in protected mode (active)
-00431100000i[CPU0  ] CS.mode = 32 bit
-00431100000i[CPU0  ] SS.mode = 32 bit
-00431100000i[CPU0  ] EFER   = 0x00000000
-00431100000i[CPU0  ] | EAX=0011bffc  EBX=00001380  ECX=0000022e  EDX=00007dfb
-00431100000i[CPU0  ] | ESP=0011bfec  EBP=0011bfec  ESI=000e0200  EDI=00003ff4
-00431100000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
-00431100000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-00431100000i[CPU0  ] |  CS:0023( 0004| 0|  3) 00000000 ffffffff 1 1
-00431100000i[CPU0  ] |  DS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00431100000i[CPU0  ] |  SS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00431100000i[CPU0  ] |  ES:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00431100000i[CPU0  ] |  FS:0000( 0000| 0|  0) 00000000 00000000 0 0
-00431100000i[CPU0  ] |  GS:0000( 0000| 0|  0) 00000000 00000000 0 0
-00431100000i[CPU0  ] | EIP=00100003 (00100003)
-00431100000i[CPU0  ] | CR0=0x80000011 CR2=0x00000000
-00431100000i[CPU0  ] | CR3=0x00033000 CR4=0x00000000
-00431100000i[CPU0  ] 0x00100003>> jmp .-2 (0x00100003) : EBFE
-00431100000i[CMOS  ] Last time is 1462022087 (Sat Apr 30 15:14:47 2016)
-00431100000i[XGUI  ] Exit
-00431100000i[      ] restoring default signal behavior
-00431100000i[SIM   ] quit_sim called with exit code 1
+00127552000i[      ] cpu loop quit, shutting down simulator
+00127552000i[CPU0  ] CPU is in protected mode (active)
+00127552000i[CPU0  ] CS.mode = 32 bit
+00127552000i[CPU0  ] SS.mode = 32 bit
+00127552000i[CPU0  ] EFER   = 0x00000000
+00127552000i[CPU0  ] | EAX=0011bffc  EBX=00001380  ECX=0000022e  EDX=00007dfb
+00127552000i[CPU0  ] | ESP=0011bfec  EBP=0011bfec  ESI=000e0200  EDI=00003ff4
+00127552000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
+00127552000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+00127552000i[CPU0  ] |  CS:0023( 0004| 0|  3) 00000000 ffffffff 1 1
+00127552000i[CPU0  ] |  DS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+00127552000i[CPU0  ] |  SS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+00127552000i[CPU0  ] |  ES:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+00127552000i[CPU0  ] |  FS:0000( 0000| 0|  0) 00000000 00000000 0 0
+00127552000i[CPU0  ] |  GS:0000( 0000| 0|  0) 00000000 00000000 0 0
+00127552000i[CPU0  ] | EIP=00100003 (00100003)
+00127552000i[CPU0  ] | CR0=0x80000011 CR2=0x00000000
+00127552000i[CPU0  ] | CR3=0x00033000 CR4=0x00000000
+00127552000i[CPU0  ] 0x00100003>> jmp .-2 (0x00100003) : EBFE
+00127552000i[CMOS  ] Last time is 1462022870 (Sat Apr 30 15:27:50 2016)
+00127552000i[XGUI  ] Exit
+00127552000i[      ] restoring default signal behavior
+00127552000i[SIM   ] quit_sim called with exit code 1
