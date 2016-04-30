@@ -99,6 +99,7 @@ void init_task1(void)
 	list_del(l);
      	struct task_struct *init = list_head_to_task_struct(l);
 	union task_union *p = (union task_union*)init;
+     	list_del(&(*init).list);
      	(*init).PID = 1;
 	set_quantum(init,DEFAULT_QUANTUM);
 	init_stats(&(*init).stats);
