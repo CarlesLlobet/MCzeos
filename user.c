@@ -12,6 +12,6 @@ int __attribute__ ((__section__(".text.main")))
 
 	//Jocs de prova
   
-  //runjp();
+  runjp();
   while(1);	
 }

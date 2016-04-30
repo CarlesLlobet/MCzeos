@@ -62,13 +62,15 @@ int sys_fork(){
   	lhcurrent=list_first(&freequeue);
   
   	list_del(lhcurrent);
+	
+	child = list_head_to_task_struct(lhcurrent);	
   	
   	uchild=(union task_union*)child;
   
   	/* Copy the parent's task struct to child's */
   	copy_data(current(), uchild, sizeof(union task_union));
    
-	 allocate_DIR(child);
+	allocate_DIR(child);
 
 	//Buscar pagines per alocatar DATA+STACK
 	int new_pag, pag, i;
