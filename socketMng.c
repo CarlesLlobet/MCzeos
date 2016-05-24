@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define MaxCon 10
 
 // Create a socket and initialize it to be able to accept 
 // connections.
@@ -18,6 +19,35 @@
 int
 createServerSocket (int port)
 {
+int fd,error;
+    struct sockaddr_in address;
+    struct sockaddr s_addr;
+    fd = socket(AF_INET, SOCK_STREAM,0);
+    if (fd == -1)
+    {
+        perror("Error creating socket\n");
+        exit(1);
+    }
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(port);
+    error = bind(fd, (struct sockaddr *) &address, sizeof(s_addr));  
+    if(error != 0)
+    {
+        perror("Error binding socket\n");
+        exit(1);
+    }
+    error = listen(fd,MaxCon);
+    if(error == -1){
+        perror("");
+        exit(1);
+    }
+
+#ifdef DEBUG
+    printf("server creat [%d]\n",fd);
+#endif
+    return fd;
 }
 
 
@@ -29,7 +59,23 @@ createServerSocket (int port)
 int
 acceptNewConnections (int socket_fd)
 {
+int channel;
+    struct socklen_t *len;
+    struct sockaddr *dir;
 
+    memset((char *) &dir, 0, sizeof(dir));
+
+    channel = accept(socket_fd, dir, len);
+    if(channel == -1)
+    {
+        perror("error al aceptar conexion");
+        exit(1);
+    }
+
+#ifdef DEBUG
+    printf("socket [%d]\n",channel);
+#endif
+    return channel;
 }
 
 // Returns the socket virtual device that the client should use to access 
