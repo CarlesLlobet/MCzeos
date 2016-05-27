@@ -2,6 +2,23 @@
 #include <string.h>
 #include <stdio.h>
 
+int MAX_CLIENTS;
+int NUM_CONEXIONS;
+
+void doServiceFork (int fd)
+{
+    int pid;
+    pid = fork();
+    if(pid < 0){
+        perror ("Error al crear hijo\n");
+        exit(1);
+    }
+    if(pid == 0){
+        doService(fd);
+        exit(0);
+    }
+    NUM_CONEXIONS++;
+}
 
 doService(int fd) {
 int i = 0;
@@ -39,11 +56,14 @@ main (int argc, char *argv[])
   char buffer[80];
   int ret;
   int port;
+  int type;
 
+  MAX_CLIENTS = 100;
+  NUM_CONEXIONS = 0;
 
-  if (argc != 2)
+  if (argc != 3)
     {
-      strcpy (buffer, "Usage: ServerSocket PortNumber\n");
+      strcpy (buffer, "Usage: ServerSocket PortNumber Type\n");
       write (2, buffer, strlen (buffer));
       exit (1);
     }
@@ -56,16 +76,37 @@ main (int argc, char *argv[])
       exit (1);
     }
 
-  while (1) {
-	  connectionFD = acceptNewConnections (socketFD);
-	  if (connectionFD < 0)
-	  {
-		  perror ("Error establishing connection \n");
-		  deleteSocket(socketFD);
-		  exit (1);
-	  }
+  type = atoi(argv[2]);
+  if (type!=3) {
+    while (1) {
+	    connectionFD = acceptNewConnections (socketFD);
+	    if (connectionFD < 0){
+		    perror ("Error establishing connection \n");
+		    deleteSocket(socketFD);
+		    exit (1);
+	    }
 
-	  doService(connectionFD);
+  	   if(type==1) doService(connectionFD); //Sequential
+           else doServiceFork(connectionFD); //Concurrent unbounded
+    }
+  } else {
+    //Bounded
+    #ifdef DEBUG
+    printf("Conexions: [%d/%d]\n",NUM_CONECTIONS, MAX_CLIENTS);
+#endif
+
+    if(NUM_CONEXIONS >= MAX_CLIENTS){
+      #ifdef DEBUG
+        printf("Màxim número de connexions\n");
+      #endif
+        while (waitpid(-1,NULL,0) > 0);
+    }
+    connectionFD = acceptNewConnections (socketFD);
+    if (connectionFD < 0){
+        perror ("Error establishing connection \n");
+        deleteSocket(socketFD);
+        exit (1);
+    }
+    doServiceFork(connectionFD);
   }
-
 }
